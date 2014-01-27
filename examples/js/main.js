@@ -5,6 +5,7 @@
  */
 $('.slider-single').slider({
 	//auto: true,
+	forceTouch: true,
 	duration: 1000,
 	//infinite: false,
 	single: true
@@ -14,6 +15,7 @@ $('.slider-default').slider();
 
 $('.slider-auto').slider({
 	auto: true,
+	forceTouch: true,
 	duration: 2000,
 	single: true
 });
