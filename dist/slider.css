@@ -1,0 +1,90 @@
+/*! slider v1.0.0 2014-01-26 */
+ul,
+li {
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+.slider {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  height: 100%;
+  visibility: hidden;
+  width: 100%;
+
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+ 
+  .slider-viewport {
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .slider-mask {
+    float: left;
+    font-size: 0;
+    transition: all 0.5s;
+    transform: translate3d(0px,0,0px);
+  }
+
+    .slider-mask li {
+      display: block;
+      float: left;
+      font-size: 13px;
+
+      -webkit-sizing: border-box;
+      -moz-sizing: border-box;
+      box-sizing: border-box;
+      width: 100px;
+      margin: 0;
+    }
+
+  .slider .prev-btn,
+  .slider .next-btn {
+    color: #000;
+    font-size: 2em;
+    padding: 2%;
+    left: 0;
+    position: absolute;
+    top: 30%;
+    z-index: 1;
+  }
+
+  .slider .next-btn {
+    left: auto;
+    right: 0;
+  }
+
+  .slider-pager {
+    margin: 0.5em 0;
+    text-align: center;
+  }
+
+  .slider-pager li {
+    border: 0;
+    display: inline-block;
+    margin: 0 5px;
+    padding: 0;
+  }
+
+    .slider-pager a {
+      background-color: #999;
+      border-radius: 100%;
+      display: block;
+      height: 8px;
+      overflow: hidden;
+      padding: 0;
+      text-indent: -999em;
+      text-decoration: none;
+      width: 8px;
+    }
+
+    .slider-pager .active {
+      background-color: #000;
+    }

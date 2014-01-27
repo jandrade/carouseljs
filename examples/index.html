@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>
+        </title>
+        <link rel="stylesheet" href="css/slider.css">
+
+        <style>
+
+            .slider-single {
+                width: 600px;
+            }
+
+            @media (max-width: 600px) {
+                .slider-single {
+                    width: 300px;
+                }
+            }
+
+            .single .slider-mask li {
+                padding: 0 50px;
+            }
+
+            .slider-mask li {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            Slider Example
+        </h1>
+
+        <h2>Default</h2>
+        <div class="slider slider-default">
+            <ul class="slider-mask">
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=7" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=8" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=9" alt=""></li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <h2>Single</h2>
+        <div class="slider slider-single single">
+            <ul class="slider-mask">
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2>Auto</h2>
+        <div class="slider slider-auto single">
+            <ul class="slider-mask">
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2>Without infinite scroll</h2>
+        <div class="slider slider-no-inf">
+            <ul class="slider-mask">
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+            </ul>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/slider.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/prefixr.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/utils.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
+    </body>
+
+</html>
