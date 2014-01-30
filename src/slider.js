@@ -254,14 +254,13 @@
       }
 
       // reset viewport width (ios7 fix)
-      if (navigator.userAgent.match(/iPhone/i)) {
-        $(viewport).width('auto');
-      }
+      $(viewport).width('auto');
 
       var maxItems = Math.floor($(viewport).outerWidth(true) / $(items[0]).outerWidth(true));
       
       // Slider have the same slides per page
       if (!SETTINGS.single && maxItems === SETTINGS.slides) {
+        viewport.style.width = ((SETTINGS.slides * $(items[0]).outerWidth(true))) + 'px';
         return;
       }
 
@@ -295,6 +294,9 @@
       
       // viewport larger than total items (disable slider)
       if (!SETTINGS.single && maxItems >= numItems) {
+        $(itemsWrapper).find('.slider-clone').remove();
+        changeTransition(0);
+        goTo(0);
         return;
       }
 
