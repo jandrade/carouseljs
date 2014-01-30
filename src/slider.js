@@ -254,9 +254,9 @@
       }
 
       var maxItems = Math.floor($(element).outerWidth(true) / $(items[0]).outerWidth(true));
-      
+
       // Slider have the same slides per page
-      if (!SETTINGS.single && maxItems === SETTINGS.slides) {
+      if (!SETTINGS.single && (maxItems === 0 || maxItems === SETTINGS.slides)) {
         viewport.style.width = ((SETTINGS.slides * $(items[0]).outerWidth(true))) + 'px';
         return;
       }
