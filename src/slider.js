@@ -253,10 +253,7 @@
         return;
       }
 
-      // reset viewport width (ios7 fix)
-      $(viewport).width('auto');
-
-      var maxItems = Math.floor($(viewport).outerWidth(true) / $(items[0]).outerWidth(true));
+      var maxItems = Math.floor($(element).outerWidth(true) / $(items[0]).outerWidth(true));
       
       // Slider have the same slides per page
       if (!SETTINGS.single && maxItems === SETTINGS.slides) {
