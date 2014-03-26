@@ -1,4 +1,4 @@
-/*! slider v1.0.0 2014-01-26 */
+/*! slider v1.0.0 2014-03-02 */
 ul,
 li {
   padding: 0;
@@ -14,7 +14,6 @@ img {
   -webkit-user-select: none;
   user-select: none;
   height: 100%;
-  position: relative;
   visibility: hidden;
   width: 100%;
 

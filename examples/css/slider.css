@@ -32,6 +32,9 @@ img {
     transform: translate3d(0px,0,0px);
   }
 
+    /**
+     * Horizontal Slider (default)
+     */
     .slider-mask li {
       display: block;
       float: left;
@@ -44,6 +47,19 @@ img {
       margin: 0;
     }
 
+    /**
+     * Vertical Slider
+     */
+    .slider-vertical .slider-mask {
+      width: 100% !important;  
+    }
+    .slider-vertical .slider-mask li {
+      width: 100%;
+    }
+
+  /**
+   * Navigation arrows
+   */
   .slider .prev-btn,
   .slider .next-btn {
     color: #000;
@@ -60,6 +76,9 @@ img {
     right: 0;
   }
 
+  /**
+   * Pager
+   */
   .slider-pager {
     margin: 0.5em 0;
     text-align: center;

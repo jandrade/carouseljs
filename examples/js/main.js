@@ -3,6 +3,7 @@
  * @author Juan Andrade <juandavidandrade@gmail.com>
  * @version 1.0
  */
+
 $('.slider-single').slider({
 	//auto: true,
 	forceTouch: true,
@@ -13,13 +14,20 @@ $('.slider-single').slider({
 
 $('.slider-default').slider();
 
+/*
 $('.slider-auto').slider({
 	auto: true,
 	forceTouch: true,
 	duration: 2000,
 	single: true
 });
+*/
 
 $('.slider-no-inf').slider({
 	infinite: false
+});
+
+$('.slider-vertical').slider({
+	forceTouch: true,
+	vertical: true
 });

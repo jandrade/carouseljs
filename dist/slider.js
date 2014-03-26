@@ -1,4 +1,4 @@
-/*! slider v1.0.0 2014-01-26 */
+/*! slider v1.0.0 2014-03-02 */
 var Prefixr = (function() {
   var _cssProperties = {
     textShadow: "textShadow",
@@ -299,10 +299,11 @@ var Prefixr = (function() {
         return;
       }
 
-      var maxItems = Math.floor($(viewport).outerWidth(true) / $(items[0]).outerWidth(true));
-      
+      var maxItems = Math.floor($(element).outerWidth(true) / $(items[0]).outerWidth(true));
+
       // Slider have the same slides per page
-      if (!SETTINGS.single && maxItems === SETTINGS.slides) {
+      if (!SETTINGS.single && (maxItems === 0 || maxItems === SETTINGS.slides)) {
+        viewport.style.width = ((SETTINGS.slides * $(items[0]).outerWidth(true))) + 'px';
         return;
       }
 
@@ -336,6 +337,9 @@ var Prefixr = (function() {
       
       // viewport larger than total items (disable slider)
       if (!SETTINGS.single && maxItems >= numItems) {
+        $(itemsWrapper).find('.slider-clone').remove();
+        changeTransition(0);
+        goTo(0);
         return;
       }
 

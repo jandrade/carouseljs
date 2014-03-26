@@ -113,6 +113,10 @@
        */
       intervalID,
 
+      hasPager = false,
+
+      isSliding = false,
+
       /**
        * Default settings
        * @type {Enum}
@@ -133,7 +137,8 @@
         delta: 50,
         forceTouch: false,
         auto: false,
-        duration: 3000
+        duration: 3000,
+        vertical: false
       },
       TEMPLATES = {
         pager: '<ul class="slider-pager"></ul>',
@@ -180,6 +185,21 @@
     function init() {
       resizeItems();
       $(window).on('resize', resizeItems);
+
+      element.addEventListener("mousewheel", function(e) {
+        if (isSliding) {
+         // e.preventDefault();
+          return;
+        }
+
+        console.log("ee: ", e);
+
+        /*if (e.deltaY > 0) {
+          next();
+        } else {
+          prev();
+        }*/
+      }, false);
     }
 
     /**
@@ -194,7 +214,7 @@
       }
 
       if (SETTINGS.infinite) {
-        viewport.addEventListener(Prefixr.transitionend, transitionEndHandler, true);
+        viewport.addEventListener(Prefixr.transitionend, transitionEndHandler, false);
       }
       
       if (SETTINGS.arrows) {
@@ -205,8 +225,13 @@
       if (!Utils.touch()) {
         document.body.addEventListener(UIEvent.END, releaseDragging, false);
         
-        if (SETTINGS.showPager) {
-          pager.find('a').off(UIEvent.CLICK).on(UIEvent.CLICK, pager_clickHandler);
+        if (SETTINGS.showPager && hasPager) {
+          element.querySelector('.slider-pager').addEventListener(UIEvent.CLICK, function(e) {
+            e.preventDefault();
+            if (e.target.nodeName === 'A') {
+              pager_clickHandler(e);
+            }            
+          }, false);
         }
       }
     }
@@ -233,7 +258,7 @@
       for ( ; i < numSteps; i++ ) {
         items += TEMPLATES.pagerItem;
       }
-
+      
       pager = $(TEMPLATES.pager).appendTo(element).append(items).find('li');
     }
 
@@ -277,8 +302,17 @@
         size = $(element).width();
       }
 
-      // set viewport width
-      viewport.style.width = size + 'px';
+      if (!SETTINGS.vertical) {
+        // set viewport width
+        viewport.style.width = size + 'px';  
+      } else {
+        setTimeout(function() {
+          // set viewport height
+          viewport.style.height = $(items[0]).outerHeight() + 'px';
+          size = ((SETTINGS.slides * $(items[0]).outerHeight(true)));
+        }, 1000);
+      }
+      
 
       // Single view, expand items to the container width
       if (SETTINGS.single) {
@@ -288,14 +322,17 @@
 
         SETTINGS.slides = 1;
       }
-      
+
       // viewport larger than total items (disable slider)
       if (!SETTINGS.single && maxItems >= numItems) {
         $(itemsWrapper).find('.slider-clone').remove();
         changeTransition(0);
         goTo(0);
+        hasPager = false;
         return;
       }
+
+      hasPager = true;
 
       numSteps = (SETTINGS.single) ? numItems : numItems / SETTINGS.slides;
 
@@ -349,7 +386,7 @@
       }
 
       if (SETTINGS.infinite) {
-        viewport.removeEventListener(Prefixr.transitionend, transitionEndHandler, true);
+        viewport.removeEventListener(Prefixr.transitionend, transitionEndHandler, false);
       }
       
       // fix for desktop dragging
@@ -416,8 +453,16 @@
      * @param  {Number} pos - New position
      */
     function goTo(pos) {
-      itemsWrapper.style[Prefixr.transform] = 'translate3d(' + pos + 'px, 0, 0)';
-      if (SETTINGS.showPager) {
+
+      isSliding = true;
+
+      if (!SETTINGS.vertical) {
+        itemsWrapper.style[Prefixr.transform] = 'translate3d(' + pos + 'px, 0, 0)';
+      } else {
+        itemsWrapper.style[Prefixr.transform] = 'translate3d(0, ' + pos + 'px, 0)';
+      }
+
+      if (SETTINGS.showPager && hasPager) {
         var newPage = (SETTINGS.infinite) ? Math.ceil(index-1): Math.ceil(index);
         setActivePage(newPage);
       }
@@ -448,8 +493,9 @@
      * Animation ended
      */
     function transitionEndHandler() {
+      console.log("transition end!!");
       // Detect current position
-      var pos = Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x');
+      var pos = !SETTINGS.vertical ? Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x') : Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'y');
      
       // start
       if (pos > -size) {
@@ -465,6 +511,8 @@
       }
 
       setTimeout(changeTransition, 0, SETTINGS.time);
+
+      isSliding = false;
     }
 
     /**
@@ -508,7 +556,7 @@
       initialCoords.y =  e.touches ? e.touches[0].pageY : e.clientY;
 
       isDragging = true;
-      initialPos = initialCoords.x;
+      initialPos = SETTINGS.vertical ? initialCoords.y : initialCoords.x;
       
       lastPos = initialPos;
     }
@@ -521,9 +569,12 @@
       if (!isDragging) {
         return;
       } else {
-        var currentDragPos = e.touches ? e.touches[0].pageX : e.clientX,
+        var currentDragPosX = e.touches ? e.touches[0].pageX : e.clientX,
           currentDragPosY = e.touches ? e.touches[0].pageY : e.clientY,
-          isScrolling = Math.abs(currentDragPos - initialCoords.x) < Math.abs(currentDragPosY - initialCoords.y);
+          diffX = Math.abs(currentDragPosX - initialCoords.x),
+          diffY = Math.abs(currentDragPosY - initialCoords.y),
+          currentDragPos = SETTINGS.vertical ? currentDragPosY : currentDragPosX,
+          isScrolling = SETTINGS.vertical ? diffX > diffY : diffX < diffY;
         
         // user is scrolling window? (stop slider)
         if (isScrolling) {
@@ -534,7 +585,8 @@
         e.stopPropagation();
       
         changeTransition(0);
-        var pos = Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x');
+        var pos = SETTINGS.vertical ? Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'y') : Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x');
+
           
 
         goTo(pos - lastPos + currentDragPos);
@@ -552,7 +604,10 @@
       if (!isDragging) {
         return;
       }
-      var currentDragPos = e.changedTouches ? e.changedTouches[0].pageX : e.clientX;
+      var currentDragPosX = e.changedTouches ? e.changedTouches[0].pageX : e.clientX,
+        currentDragPosY = e.changedTouches ? e.changedTouches[0].pageY : e.clientY,
+        currentDragPos = SETTINGS.vertical ? currentDragPosY : currentDragPosX;
+
       isDragging = false;
 
       changeTransition(SETTINGS.time);
