@@ -113,6 +113,29 @@
        */
       intervalID,
 
+      breakpoint,
+
+      BREAKPOINTS = [
+          { s: 220,
+            w: 1
+          },
+          { s: 580,
+            w: 4
+          },
+          { s: 768,
+            w: 3
+          },
+          { s: 900,
+            w: 4
+          },
+          { s: 1024,
+            w: 5
+          },
+          { s: 1200,
+            w: 7
+          }
+        ],
+
       hasPager = false,
 
       isSliding = false,
@@ -173,10 +196,11 @@
       numItems = items.length;
       init();
 
+     /*
       itemsWrapper.style.width = (itemsWrapper.querySelectorAll(SETTINGS.items).length * 100) + "%";
-
+    */
       element.style.visibility = 'visible';
-      
+
       if (SETTINGS.auto) {
         startTimer();
       }
@@ -192,7 +216,7 @@
           return;
         }
 
-        console.log("ee: ", e);
+        //console.log("ee: ", e);
 
         /*if (e.deltaY > 0) {
           next();
@@ -226,14 +250,35 @@
         document.body.addEventListener(UIEvent.END, releaseDragging, false);
         
         if (SETTINGS.showPager && hasPager) {
+          console.log("has pager: ", element.querySelector('.slider-pager'));
           element.querySelector('.slider-pager').addEventListener(UIEvent.CLICK, function(e) {
             e.preventDefault();
+            console.log("clicked!!!!");
             if (e.target.nodeName === 'A') {
               pager_clickHandler(e);
             }            
           }, false);
         }
       }
+    }
+
+    /**
+     * Gets the current breakpoint, according to the window width
+     * @param  {Number} size - Current window width
+     * @return {Number} Returns the current breakpoint
+     */
+    function getBreakpoint(winSize) {
+      var c = BREAKPOINTS.length,
+        curBreakpoint;
+
+      while (c-- > 0) {
+        if (winSize > BREAKPOINTS[c].s) {
+          curBreakpoint = BREAKPOINTS[c].w;
+          break;
+        }
+      }
+
+      return curBreakpoint;
     }
 
     /**
@@ -259,7 +304,13 @@
         items += TEMPLATES.pagerItem;
       }
       
-      pager = $(TEMPLATES.pager).appendTo(element).append(items).find('li');
+      if (typeof pager == 'undefined') {
+        pager = $(TEMPLATES.pager).appendTo(element);
+      }
+
+      pager.append(items);
+
+      setActivePage(0);
     }
 
     /**
@@ -273,6 +324,73 @@
      * Resize carousel items
      */
     function resizeItems() {
+      var curBreakpoint = getBreakpoint($(window).width());
+      
+      $(items).width($(element).outerWidth(true)/curBreakpoint);
+      
+      itemsWrapper.style.width = ($(element).outerWidth(true) * (numItems+4/curBreakpoint)) + 'px';
+
+      // get new carousel width
+      size = $(element).outerWidth(true);
+      
+      
+      numSteps = numItems / curBreakpoint;
+
+      // add items to simulate the infinite scrolling effect
+      if (SETTINGS.infinite) {
+        $(itemsWrapper).find('.slider-clone').remove();
+        var sliceAppend = $(items).slice(0, curBreakpoint).clone().addClass('slider-clone');
+        var slicePrepend = $(items).slice(-curBreakpoint).clone().addClass('slider-clone');
+        $(itemsWrapper).append(sliceAppend).prepend(slicePrepend);
+        index = 1;
+      } else {
+        index = 0;
+      }
+
+      // disable transition
+      changeTransition(0);
+
+      // maintain slide position
+      goTo(-size * index);
+
+      // restart transition time (500ms)
+      setTimeout(changeTransition, SETTINGS.time*1000, SETTINGS.time);
+
+    
+      // new breakpoint detected
+      if (curBreakpoint === breakpoint) {
+        return;
+      }
+
+      breakpoint = curBreakpoint;
+
+      // viewport larger than total items (disable slider)
+      if (curBreakpoint >= numItems) {
+        hasPager = false;
+        // remove navigation
+        removeNavigation();
+        return;
+      }
+
+      hasPager = true;
+      
+      // create pagination
+      if (SETTINGS.showPager) {
+        // remove pager
+        $(element).find('.slider-pager').html('');
+        buildPager();
+      }
+
+      // create arrows
+      if (SETTINGS.arrows && typeof prevBtn === 'undefined') {
+        buildArrows();
+        // enable event listeners
+        addEventListeners();  
+      }
+      
+    }
+
+    function resizeItems2() {
       // If the slider container has a static width (fixed), stop repainting
       if (SETTINGS.single && typeof size !== 'undefined' && size === $(element).width()) {
         return;
@@ -375,7 +493,7 @@
     function removeNavigation() {
       // remove pager
       if (SETTINGS.showPager) {
-        $(element).find('.slider-pager').remove();
+        //$(element).find('.slider-pager').html('');
       }
 
       if (Utils.touch() || SETTINGS.forceTouch) {
@@ -453,7 +571,6 @@
      * @param  {Number} pos - New position
      */
     function goTo(pos) {
-
       isSliding = true;
 
       if (!SETTINGS.vertical) {
@@ -486,7 +603,7 @@
      */
     function setActivePage(pageIndex) {
       pager.find('a').removeClass('active');
-      $(pager.get(pageIndex)).find('a').addClass('active');
+      $(pager.find('li').get(pageIndex)).find('a').addClass('active');
     }
 
     /**

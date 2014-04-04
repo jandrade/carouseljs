@@ -4,6 +4,9 @@
  * @version 1.0
  */
 
+$('.slider-default').slider();
+
+
 $('.slider-single').slider({
 	//auto: true,
 	forceTouch: true,
@@ -12,16 +15,13 @@ $('.slider-single').slider({
 	single: true
 });
 
-$('.slider-default').slider();
-
-/*
 $('.slider-auto').slider({
 	auto: true,
 	forceTouch: true,
 	duration: 2000,
 	single: true
 });
-*/
+
 
 $('.slider-no-inf').slider({
 	infinite: false
@@ -29,5 +29,6 @@ $('.slider-no-inf').slider({
 
 $('.slider-vertical').slider({
 	forceTouch: true,
+	infinite: false,
 	vertical: true
 });

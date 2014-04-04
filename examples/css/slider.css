@@ -43,7 +43,7 @@ img {
       -webkit-sizing: border-box;
       -moz-sizing: border-box;
       box-sizing: border-box;
-      width: 100px;
+     /* width: 100px;*/
       margin: 0;
     }
 
