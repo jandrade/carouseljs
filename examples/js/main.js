@@ -18,8 +18,7 @@ $('.slider-single').slider({
 $('.slider-auto').slider({
 	auto: true,
 	forceTouch: true,
-	duration: 2000,
-	single: true
+	duration: 2000
 });
 
 
