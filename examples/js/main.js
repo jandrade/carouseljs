@@ -8,10 +8,8 @@ $('.slider-default').slider();
 
 
 $('.slider-single').slider({
-	//auto: true,
 	forceTouch: true,
 	duration: 1000,
-	//infinite: false,
 	single: true
 });
 
@@ -29,5 +27,6 @@ $('.slider-no-inf').slider({
 $('.slider-vertical').slider({
 	forceTouch: true,
 	infinite: false,
-	vertical: true
+	vertical: true,
+	single: true
 });

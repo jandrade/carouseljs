@@ -174,10 +174,8 @@
      * @construcs jda.Carousel
      */
     (function() {
-
       SETTINGS = $.extend(SETTINGS, options);
-      
-      element = $(selector)[0];
+      element = (typeof selector === 'string') ? document.querySelector(selector) : selector;
 
       if ($(selector).hasClass('sliderjs')) {
         return;
@@ -210,19 +208,24 @@
       resizeItems();
       $(window).on('resize', resizeItems);
 
+      isSliding = false;
+      
       element.addEventListener("mousewheel", function(e) {
+        console.log("isSliding: ", isSliding);
         if (isSliding) {
          // e.preventDefault();
           return;
         }
+        e.preventDefault();
+        e.stopPropagation();
 
-        //console.log("ee: ", e);
+        console.log("e.deltaY: ", e.deltaY);
 
-        /*if (e.deltaY > 0) {
+        if (e.deltaY > 0) {
           next();
         } else {
           prev();
-        }*/
+        }
       }, false);
     }
 
@@ -237,9 +240,15 @@
         viewport.addEventListener(UIEvent.END, endHandler, false);
       }
 
-      if (SETTINGS.infinite) {
-        viewport.addEventListener(Prefixr.transitionend, transitionEndHandler, false);
+      if (SETTINGS.forceTouch) {
+        $(items).find('img').on(UIEvent.START, function(e) {
+          e.preventDefault();
+        });
       }
+
+    //  if (SETTINGS.infinite) {
+        viewport.addEventListener(Prefixr.transitionend, transitionEndHandler, false);
+    //  }
       
       if (SETTINGS.arrows) {
         prevBtn.addEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
@@ -250,7 +259,7 @@
         document.body.addEventListener(UIEvent.END, releaseDragging, false);
         
         if (SETTINGS.showPager && hasPager) {
-          console.log("has pager: ", element.querySelector('.slider-pager'));
+          //console.log("has pager: ", element.querySelector('.slider-pager'));
           element.querySelector('.slider-pager').addEventListener(UIEvent.CLICK, function(e) {
             e.preventDefault();
             console.log("clicked!!!!");
@@ -304,7 +313,7 @@
         items += TEMPLATES.pagerItem;
       }
       
-      if (typeof pager == 'undefined') {
+      if (typeof pager === 'undefined') {
         pager = $(TEMPLATES.pager).appendTo(element);
       }
 
@@ -325,17 +334,30 @@
      */
     function resizeItems() {
       var curBreakpoint = getBreakpoint($(window).width());
-      
-      $(items).width($(element).outerWidth(true)/curBreakpoint);
+
+      if (SETTINGS.single) {
+        curBreakpoint = 1;
+      }
+      //console.log("resize: ", $(element).outerWidth(true)/curBreakpoint);
+      $(items).width($(element).width()/curBreakpoint);
       
       itemsWrapper.style.width = ($(element).outerWidth(true) * (numItems+4/curBreakpoint)) + 'px';
 
       // get new carousel width
       size = $(element).outerWidth(true);
-      
-      
+
       numSteps = numItems / curBreakpoint;
 
+
+      if (SETTINGS.vertical) {
+        setTimeout(function() {
+          // set viewport height
+          viewport.style.height = $(items[0]).outerHeight() + 'px';
+          size = $(items[0]).outerHeight(true);
+        }, 1000);
+      }
+
+      
       // add items to simulate the infinite scrolling effect
       if (SETTINGS.infinite) {
         $(itemsWrapper).find('.slider-clone').remove();
@@ -385,8 +407,9 @@
       if (SETTINGS.arrows && typeof prevBtn === 'undefined') {
         buildArrows();
         // enable event listeners
-        addEventListeners();  
+       
       }
+       addEventListeners();  
       
     }
 
@@ -526,7 +549,7 @@
      */
     function next() {
       var position;
-
+      
       if (SETTINGS.infinite) {
         index = (index + 1) % (numSteps + 2);
       } else {
@@ -610,7 +633,6 @@
      * Animation ended
      */
     function transitionEndHandler() {
-      console.log("transition end!!");
       // Detect current position
       var pos = !SETTINGS.vertical ? Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x') : Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'y');
      
@@ -628,7 +650,7 @@
       }
 
       setTimeout(changeTransition, 0, SETTINGS.time);
-
+      console.log("transition end!!!");
       isSliding = false;
     }
 
@@ -671,7 +693,6 @@
     function startHandler(e) {
       initialCoords.x =  e.touches ? e.touches[0].pageX : e.clientX;
       initialCoords.y =  e.touches ? e.touches[0].pageY : e.clientY;
-
       isDragging = true;
       initialPos = SETTINGS.vertical ? initialCoords.y : initialCoords.x;
       
