@@ -5,7 +5,7 @@
 
 /* global jQuery, $, Utils, Prefixr */
 
-(function($) {
+(function(bite, $) {
   'use strict';
 
   /**
@@ -13,7 +13,7 @@
    * @constructor
    * @return {Object} Exposed methods
    */
-  var Slider = function(selector, options) {
+  bite.Slider = function(selector, options) {
 
     /**
      * Slider container
@@ -76,6 +76,11 @@
       index = 0,
 
       /**
+       * Current page number
+       * @type {Number}
+       */
+      page,
+      /**
        * Transition size
        * @type {Number}
        */
@@ -132,7 +137,7 @@
             w: 5
           },
           { s: 1200,
-            w: 7
+            w: 12
           }
         ],
 
@@ -164,6 +169,7 @@
         vertical: false
       },
       TEMPLATES = {
+        viewport: '<div class="slider-viewport"></div>',
         pager: '<ul class="slider-pager"></ul>',
         pagerItem: '<li><a href="#">1</a></li>',
         prevButton: '<a href="#" class="prev-btn">&lt;</a>',
@@ -177,26 +183,28 @@
       SETTINGS = $.extend(SETTINGS, options);
       element = (typeof selector === 'string') ? document.querySelector(selector) : selector;
 
-      if ($(selector).hasClass('sliderjs')) {
+      if (element.classList.contains('sliderjs')) {
         return;
       }
 
-      $(selector).addClass('sliderjs');
+      element.classList.add('sliderjs');
 
       itemsWrapper = element.querySelector(SETTINGS.wrapper);
 
-      var tempViewport = $('<div class="slider-viewport"></div>').html(itemsWrapper).appendTo(element);
-
-      viewport = tempViewport[0];
+      viewport = document.createElement('div');
+      viewport.classList.add('slider-viewport');
+      viewport.appendChild(itemsWrapper);
+      
+      element.appendChild(viewport);
 
       items = itemsWrapper.querySelectorAll(SETTINGS.items);
 
       numItems = items.length;
+
+      index = (SETTINGS.infinite) ? 1 : 0;
+      
       init();
 
-     /*
-      itemsWrapper.style.width = (itemsWrapper.querySelectorAll(SETTINGS.items).length * 100) + "%";
-    */
       element.style.visibility = 'visible';
 
       if (SETTINGS.auto) {
@@ -206,12 +214,12 @@
 
     function init() {
       resizeItems();
-      $(window).on('resize', resizeItems);
+      
+      window.addEventListener(UIEvent.RESIZE, resizeItems);
 
       isSliding = false;
-      
+
       element.addEventListener("mousewheel", function(e) {
-        console.log("isSliding: ", isSliding);
         if (isSliding) {
          // e.preventDefault();
           return;
@@ -219,8 +227,7 @@
         e.preventDefault();
         e.stopPropagation();
 
-        console.log("e.deltaY: ", e.deltaY);
-
+     
         if (e.deltaY > 0) {
           next();
         } else {
@@ -234,6 +241,7 @@
      * @private
      */
     function addEventListeners() {
+      console.log("addEventListeners: ");
       if (Utils.touch() || SETTINGS.forceTouch) {
         viewport.addEventListener(UIEvent.START, startHandler, false);
         viewport.addEventListener(UIEvent.MOVE, moveHandler, false);
@@ -259,10 +267,8 @@
         document.body.addEventListener(UIEvent.END, releaseDragging, false);
         
         if (SETTINGS.showPager && hasPager) {
-          //console.log("has pager: ", element.querySelector('.slider-pager'));
-          element.querySelector('.slider-pager').addEventListener(UIEvent.CLICK, function(e) {
+          pager.addEventListener(UIEvent.CLICK, function(e) {
             e.preventDefault();
-            console.log("clicked!!!!");
             if (e.target.nodeName === 'A') {
               pager_clickHandler(e);
             }            
@@ -290,34 +296,68 @@
       return curBreakpoint;
     }
 
+    function createButton(className, content) {
+      var a = document.createElement('a');
+      a.href = '#';
+      a.className = className;
+      a.innerHTML = content;
+      return a;
+    }
+
+    /**
+     * [createElement description]
+     * @param  {[type]} className [description]
+     * @param  {[type]} content   [description]
+     * @return {[type]}           [description]
+     *
+     * <ul class="slider-pager"></ul>
+     */
+    function createElement(className, content, elementType) {
+      var e = document.createElement(elementType || 'div');
+      if (className !== '') {
+        e.classList.add(className);  
+      }
+      
+      if (typeof content !== 'undefined') {
+        e.innerHTML = content;
+      }
+
+      return e;
+    }
+
     /**
      * Add arrows to slider
      */
     function buildArrows() {
+      console.log("buildArrows!!!!!!!!!!!!");
       if (SETTINGS.arrows) {
-        $(TEMPLATES.prevButton + TEMPLATES.nextButton).appendTo(element);
+        prevBtn = element.appendChild(createButton('prev-btn', '&lt;'));
+        nextBtn = element.appendChild(createButton('next-btn', '&gt;'));
       }
-
-      prevBtn = element.querySelector(SETTINGS.prevBtn);
-      nextBtn = element.querySelector(SETTINGS.nextBtn);
     }
 
     /**
      * Add pagination to slider
      */
     function buildPager() {
+      console.log("buildPager!!!;");
       var i = 0,
-        items = '';
+        pagerItems = '',
+        fragment = document.createDocumentFragment();
 
       for ( ; i < numSteps; i++ ) {
-        items += TEMPLATES.pagerItem;
+        pagerItems = createElement('', '', 'li');
+        pagerItems.appendChild(createButton('', '1'));
+        fragment.appendChild(pagerItems);
       }
       
       if (typeof pager === 'undefined') {
-        pager = $(TEMPLATES.pager).appendTo(element);
+        pager = element.appendChild(createElement('slider-pager', '', 'ul'));
       }
 
-      pager.append(items);
+      pager.appendChild(fragment);
+
+      page = undefined;
 
       setActivePage(0);
     }
@@ -333,18 +373,34 @@
      * Resize carousel items
      */
     function resizeItems() {
-      var curBreakpoint = getBreakpoint($(window).width());
+      var curBreakpoint = getBreakpoint(window.innerWidth),
+        i = 0,
+        numItems = items.length;
 
       if (SETTINGS.single) {
         curBreakpoint = 1;
       }
-      //console.log("resize: ", $(element).outerWidth(true)/curBreakpoint);
-      $(items).width($(element).width()/curBreakpoint);
-      
-      itemsWrapper.style.width = ($(element).outerWidth(true) * (numItems+4/curBreakpoint)) + 'px';
+
+      // disable carousel
+      if (curBreakpoint > numItems) {
+        console.log("remove clones!!!!!!");
+        // remove pager
+        if (typeof pager !== 'undefined') {
+          pager.innerHTML = '';
+        }
+        $(itemsWrapper).find('.slider-clone').remove();
+        index = 0;
+        curBreakpoint = numItems;
+      }
 
       // get new carousel width
-      size = $(element).outerWidth(true);
+      size = element.offsetWidth;
+      
+      for ( ; i < numItems; i++ ) {
+        items[i].style.width = size/curBreakpoint + 'px';
+      }
+      
+      itemsWrapper.style.width = (SETTINGS.infinite) ? ((numItems+4)*100) + '%' : (numItems*100) + '%';
 
       numSteps = numItems / curBreakpoint;
 
@@ -353,45 +409,45 @@
         setTimeout(function() {
           // set viewport height
           viewport.style.height = $(items[0]).outerHeight() + 'px';
-          size = $(items[0]).outerHeight(true);
+          size = items[0].offsetHeight;
         }, 1000);
       }
 
-      
-      // add items to simulate the infinite scrolling effect
-      if (SETTINGS.infinite) {
-        $(itemsWrapper).find('.slider-clone').remove();
-        var sliceAppend = $(items).slice(0, curBreakpoint).clone().addClass('slider-clone');
-        var slicePrepend = $(items).slice(-curBreakpoint).clone().addClass('slider-clone');
-        $(itemsWrapper).append(sliceAppend).prepend(slicePrepend);
-        index = 1;
-      } else {
-        index = 0;
+
+      // new breakpoint detected
+      if (curBreakpoint === breakpoint) {
+        return;
       }
+      
+      breakpoint = curBreakpoint;
 
       // disable transition
       changeTransition(0);
 
+      
       // maintain slide position
       goTo(-size * index);
 
       // restart transition time (500ms)
       setTimeout(changeTransition, SETTINGS.time*1000, SETTINGS.time);
 
-    
-      // new breakpoint detected
-      if (curBreakpoint === breakpoint) {
-        return;
-      }
-
-      breakpoint = curBreakpoint;
-
       // viewport larger than total items (disable slider)
       if (curBreakpoint >= numItems) {
+        console.log("DISABLE SLIDER.......");
         hasPager = false;
         // remove navigation
         removeNavigation();
         return;
+      }
+
+      console.log("addd items........");
+
+      // add items to simulate the infinite scrolling effect
+      if (SETTINGS.infinite) {
+        $(itemsWrapper).find('.slider-clone').remove();
+        var sliceAppend = $(items).slice(0, curBreakpoint).clone().addClass('slider-clone');
+        var slicePrepend = $(items).slice(-curBreakpoint).clone().addClass('slider-clone');
+        $(itemsWrapper).append(sliceAppend).prepend(slicePrepend);
       }
 
       hasPager = true;
@@ -399,115 +455,19 @@
       // create pagination
       if (SETTINGS.showPager) {
         // remove pager
-        $(element).find('.slider-pager').html('');
+        if (typeof pager !== 'undefined') {
+          pager.innerHTML = '';
+        }
+        
         buildPager();
       }
-
-      // create arrows
-      if (SETTINGS.arrows && typeof prevBtn === 'undefined') {
-        buildArrows();
-        // enable event listeners
-       
-      }
-       addEventListeners();  
-      
-    }
-
-    function resizeItems2() {
-      // If the slider container has a static width (fixed), stop repainting
-      if (SETTINGS.single && typeof size !== 'undefined' && size === $(element).width()) {
-        return;
-      }
-
-      var maxItems = Math.floor($(element).outerWidth(true) / $(items[0]).outerWidth(true));
-
-      // Slider have the same slides per page
-      if (!SETTINGS.single && (maxItems === 0 || maxItems === SETTINGS.slides)) {
-        viewport.style.width = ((SETTINGS.slides * $(items[0]).outerWidth(true))) + 'px';
-        return;
-      }
-
-      // remove navigation
-      removeNavigation();
-
-      SETTINGS.slides = maxItems;
-
-      if (maxItems >= numItems) {
-        SETTINGS.slides = numItems;
-      }
-      
-      // get new carousel width
-      if (!SETTINGS.single) {
-        size = ((SETTINGS.slides * $(items[0]).outerWidth(true)));
-      } else {
-        size = $(element).width();
-      }
-
-      if (!SETTINGS.vertical) {
-        // set viewport width
-        viewport.style.width = size + 'px';  
-      } else {
-        setTimeout(function() {
-          // set viewport height
-          viewport.style.height = $(items[0]).outerHeight() + 'px';
-          size = ((SETTINGS.slides * $(items[0]).outerHeight(true)));
-        }, 1000);
-      }
-      
-
-      // Single view, expand items to the container width
-      if (SETTINGS.single) {
-        for (var i = 0 ; i < numItems; i++) {
-          items[i].style.width = size + 'px';
-        }
-
-        SETTINGS.slides = 1;
-      }
-
-      // viewport larger than total items (disable slider)
-      if (!SETTINGS.single && maxItems >= numItems) {
-        $(itemsWrapper).find('.slider-clone').remove();
-        changeTransition(0);
-        goTo(0);
-        hasPager = false;
-        return;
-      }
-
-      hasPager = true;
-
-      numSteps = (SETTINGS.single) ? numItems : numItems / SETTINGS.slides;
 
       // create arrows
       if (SETTINGS.arrows) {
         buildArrows();
-      }
-
-      // create pagination
-      if (SETTINGS.showPager) {
-        buildPager();
-      }
-
-      // enable event listeners
-      addEventListeners();
-
-      // add items to simulate the infinite scrolling effect
-      if (SETTINGS.infinite) {
-        $(itemsWrapper).find('.slider-clone').remove();
-        var sliceAppend = $(items).slice(0, SETTINGS.slides).clone().addClass('slider-clone');
-        var slicePrepend = $(items).slice(-SETTINGS.slides).clone().addClass('slider-clone');
-        $(itemsWrapper).append(sliceAppend).prepend(slicePrepend);
-        index = 1;
-      } else {
-        index = 0;
-      }
-
-      // disable transition
-      changeTransition(0);
-      // maintain slide position
-      goTo(-size * index);
-    
-      // restart transition time (500ms)
-      setTimeout(changeTransition, SETTINGS.time*1000, SETTINGS.time);
+     }
+       addEventListeners();  
+      
     }
 
     /**
@@ -534,13 +494,14 @@
       if (!Utils.touch() && SETTINGS.forceTouch) {
         document.body.removeEventListener(UIEvent.END, releaseDragging, false);
       }
-
+      console.log("prevBtn: ", prevBtn);
       // remove arrows
-      if (SETTINGS.arrows && prevBtn && nextBtn) {
+      if (SETTINGS.arrows && prevBtn) {
+        console.log("remove prev button");
         prevBtn.removeEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
         nextBtn.removeEventListener(UIEvent.CLICK, nextBtn_clickHandler, false);
-        $(prevBtn).remove();
-        $(nextBtn).remove();
+        element.removeChild(prevBtn);
+        element.removeChild(nextBtn);
       }
     }
 
@@ -625,8 +586,18 @@
      * Update pager
      */
     function setActivePage(pageIndex) {
-      pager.find('a').removeClass('active');
-      $(pager.find('li').get(pageIndex)).find('a').addClass('active');
+      if (page === pageIndex) {
+        return;
+      }
+      if (pager.querySelector('.active')) {
+        pager.querySelector('.active').classList.remove('active');  
+      }
+
+      page = pageIndex;
+      
+      if (typeof pager.querySelectorAll('li')[pageIndex] !== 'undefined') {
+        pager.querySelectorAll('li')[pageIndex].querySelector('a').classList.add('active');
+      }
     }
 
     /**
@@ -781,10 +752,4 @@
     return element;
   };
 
-  $.fn.slider = function(options) {
-    return this.each(function(index, item) {
-      return new Slider(item, options);
-    });
-  };
-
-}(jQuery || $));
+}(window.bite = window.bite || {}, jQuery || $));

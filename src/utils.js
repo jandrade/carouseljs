@@ -5,12 +5,14 @@ var UIEvent = ('ontouchstart' in window) ? {
   START: 'touchstart',
   MOVE: 'touchmove',
   END: 'touchend',
-  CLICK: 'touchstart'
+  CLICK: 'touchstart',
+  RESIZE: 'orientationchange'
 } : {
   START: 'mousedown',
   MOVE: 'mousemove',
   END: 'mouseup',
-  CLICK: 'click'
+  CLICK: 'click',
+  RESIZE: 'resize'
 };
 
 var Utils = {
