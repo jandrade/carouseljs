@@ -5,7 +5,7 @@
  */
 
 $('.slider-default').slider();
-/*
+
 $('.slider-single').slider({
 	forceTouch: true,
 	duration: 1000,
@@ -29,4 +29,3 @@ $('.slider-vertical').slider({
 	vertical: true,
 	single: true
 });
-*/

@@ -3,9 +3,9 @@
  * @author Juan Andrade <juandavidandrade@gmail.com>
  */
 
-/* global jQuery, $, Utils, Prefixr */
+/* global Utils, Prefixr */
 
-(function(bite, $) {
+(function(bite) {
   'use strict';
 
   /**
@@ -122,9 +122,9 @@
 
       BREAKPOINTS = [
           { s: 220,
-            w: 1
+            w: 3
           },
-          { s: 580,
+          { s: 460,
             w: 4
           },
           { s: 768,
@@ -155,6 +155,7 @@
         items: 'li',
         prevBtn: '.prev-btn',
         nextBtn: '.next-btn',
+        clone: '.slider-clone',
         slides: 0,
         time: 0.5,
         single: false,
@@ -180,7 +181,7 @@
      * @construcs jda.Carousel
      */
     (function() {
-      SETTINGS = $.extend(SETTINGS, options);
+      SETTINGS = bite.utils.extend(SETTINGS, options);
       element = (typeof selector === 'string') ? document.querySelector(selector) : selector;
 
       if (element.classList.contains('sliderjs')) {
@@ -241,7 +242,6 @@
      * @private
      */
     function addEventListeners() {
-      console.log("addEventListeners: ");
       if (Utils.touch() || SETTINGS.forceTouch) {
         viewport.addEventListener(UIEvent.START, startHandler, false);
         viewport.addEventListener(UIEvent.MOVE, moveHandler, false);
@@ -249,14 +249,18 @@
       }
 
       if (SETTINGS.forceTouch) {
-        $(items).find('img').on(UIEvent.START, function(e) {
-          e.preventDefault();
-        });
+        var images = itemsWrapper.querySelectorAll('img');
+
+        for (var i = images.length - 1; i >= 0; i--) {
+          images[i].addEventListener(UIEvent.START, function(e) {
+            e.preventDefault();
+          });
+        };
       }
 
-    //  if (SETTINGS.infinite) {
+      if (SETTINGS.infinite) {
         viewport.addEventListener(Prefixr.transitionend, transitionEndHandler, false);
-    //  }
+      }
       
       if (SETTINGS.arrows) {
         prevBtn.addEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
@@ -329,7 +333,6 @@
      * Add arrows to slider
      */
     function buildArrows() {
-      console.log("buildArrows!!!!!!!!!!!!");
       if (SETTINGS.arrows) {
         prevBtn = element.appendChild(createButton('prev-btn', '&lt;'));
         nextBtn = element.appendChild(createButton('next-btn', '&gt;'));
@@ -340,7 +343,6 @@
      * Add pagination to slider
      */
     function buildPager() {
-      console.log("buildPager!!!;");
       var i = 0,
         pagerItems = '',
         fragment = document.createDocumentFragment();
@@ -375,6 +377,7 @@
     function resizeItems() {
       var curBreakpoint = getBreakpoint(window.innerWidth),
         i = 0,
+        clones = element.querySelectorAll(SETTINGS.clone),
         numItems = items.length;
 
       if (SETTINGS.single) {
@@ -383,12 +386,13 @@
 
       // disable carousel
       if (curBreakpoint > numItems) {
-        console.log("remove clones!!!!!!");
         // remove pager
         if (typeof pager !== 'undefined') {
           pager.innerHTML = '';
         }
-        $(itemsWrapper).find('.slider-clone').remove();
+
+        // remove cloned elements
+        bite.utils.remove(clones);
         index = 0;
         curBreakpoint = numItems;
       }
@@ -399,6 +403,10 @@
       for ( ; i < numItems; i++ ) {
         items[i].style.width = size/curBreakpoint + 'px';
       }
+
+      for (i = clones.length - 1; i >= 0; i--) {
+        clones[i].style.width = size/curBreakpoint + 'px';
+      }
       
       itemsWrapper.style.width = (SETTINGS.infinite) ? ((numItems+4)*100) + '%' : (numItems*100) + '%';
 
@@ -408,46 +416,50 @@
       if (SETTINGS.vertical) {
         setTimeout(function() {
           // set viewport height
-          viewport.style.height = $(items[0]).outerHeight() + 'px';
+          viewport.style.height = items[0].offsetHeight + 'px';
           size = items[0].offsetHeight;
         }, 1000);
       }
 
 
-      // new breakpoint detected
-      if (curBreakpoint === breakpoint) {
-        return;
-      }
-      
-      breakpoint = curBreakpoint;
-
       // disable transition
       changeTransition(0);
 
-      
       // maintain slide position
       goTo(-size * index);
 
       // restart transition time (500ms)
       setTimeout(changeTransition, SETTINGS.time*1000, SETTINGS.time);
 
+      // new breakpoint detected
+      if (curBreakpoint === breakpoint) {
+        return;
+      }
+
+      breakpoint = curBreakpoint;
+
       // viewport larger than total items (disable slider)
       if (curBreakpoint >= numItems) {
-        console.log("DISABLE SLIDER.......");
         hasPager = false;
         // remove navigation
         removeNavigation();
         return;
       }
 
-      console.log("addd items........");
-
       // add items to simulate the infinite scrolling effect
       if (SETTINGS.infinite) {
-        $(itemsWrapper).find('.slider-clone').remove();
-        var sliceAppend = $(items).slice(0, curBreakpoint).clone().addClass('slider-clone');
-        var slicePrepend = $(items).slice(-curBreakpoint).clone().addClass('slider-clone');
-        $(itemsWrapper).append(sliceAppend).prepend(slicePrepend);
+        var clones = element.querySelectorAll(SETTINGS.clone);
+      
+        bite.utils.remove(clones);
+
+        var sliceA = Array.prototype.slice.call(items).slice(0, curBreakpoint),
+          slicePrepend = Array.prototype.slice.call(items).slice(-curBreakpoint),
+          clonedAppend = bite.utils.clone(sliceA, 'slider-clone'),
+          clonedPrepend = bite.utils.clone(slicePrepend, 'slider-clone');
+        
+        // add clones
+        bite.utils.append(itemsWrapper, clonedAppend);
+        bite.utils.prepend(itemsWrapper, clonedPrepend);
       }
 
       hasPager = true;
@@ -463,10 +475,11 @@
       }
 
       // create arrows
-      if (SETTINGS.arrows) {
+      if (SETTINGS.arrows && typeof prevBtn === 'undefined') {
         buildArrows();
-     }
-       addEventListeners();  
+      }
+      
+      addEventListeners();  
       
     }
 
@@ -474,11 +487,7 @@
      * Remove event listeners, arrows and pagination buttons
      */
     function removeNavigation() {
-      // remove pager
-      if (SETTINGS.showPager) {
-        //$(element).find('.slider-pager').html('');
-      }
-
+      
       if (Utils.touch() || SETTINGS.forceTouch) {
         // remove drag&drop handlers
         viewport.removeEventListener(UIEvent.START, startHandler, false);
@@ -494,14 +503,16 @@
       if (!Utils.touch() && SETTINGS.forceTouch) {
         document.body.removeEventListener(UIEvent.END, releaseDragging, false);
       }
-      console.log("prevBtn: ", prevBtn);
+      
       // remove arrows
       if (SETTINGS.arrows && prevBtn) {
-        console.log("remove prev button");
         prevBtn.removeEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
         nextBtn.removeEventListener(UIEvent.CLICK, nextBtn_clickHandler, false);
         element.removeChild(prevBtn);
         element.removeChild(nextBtn);
+
+        prevBtn = undefined;
+        nextBtn = undefined;
       }
     }
 
@@ -621,7 +632,6 @@
       }
 
       setTimeout(changeTransition, 0, SETTINGS.time);
-      console.log("transition end!!!");
       isSliding = false;
     }
 
@@ -649,8 +659,7 @@
      */
     function pager_clickHandler(e) {
       e.preventDefault();
-      var link = $(e.target),
-        pagerIndex = link.closest('ul').find('li').index(link.closest('li'));
+      var pagerIndex = bite.utils.index(e.target.parentNode, '.slider-pager');
 
       index = pagerIndex+1;
 
@@ -709,6 +718,7 @@
      */
     function endHandler(e) {
       e.stopPropagation();
+      e.preventDefault();
       
       if (!isDragging) {
         return;
@@ -752,4 +762,4 @@
     return element;
   };
 
-}(window.bite = window.bite || {}, jQuery || $));
+}(window.bite = window.bite || {}));
