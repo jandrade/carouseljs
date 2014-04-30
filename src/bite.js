@@ -8,9 +8,12 @@
 (function(bite) {
   'use strict';
 
-  bite.utils = {
+  /**
+   * DOM helpers
+   */
+  bite.dom = {
 		index: function(el, parent) {
-			var nodeList = Array.prototype.slice.call(document.querySelector(parent).children);
+			var nodeList = Array.prototype.slice.call(parent.children);
 			return nodeList.indexOf(el);
 		},
 
@@ -43,7 +46,13 @@
 				elems[i].parentNode.removeChild(elems[i]);
 			}
 		},
+  };
 
+  /**
+   * Global helpers
+   * @type {Object}
+   */
+  bite.utils = {
 		/**
      * Extends an object with another object
      * @param  {Object} dest 
@@ -82,4 +91,58 @@
 		}
   };
 
+  /**
+	* Define input events based on touch support
+	*/
+  bite.UIEvent = ('ontouchstart' in window) ? {
+		START: 'touchstart',
+		MOVE: 'touchmove',
+		END: 'touchend',
+		CLICK: 'touchstart',
+		RESIZE: 'orientationchange'
+	} : {
+		START: 'mousedown',
+		MOVE: 'mousemove',
+		END: 'mouseup',
+		CLICK: 'click',
+		RESIZE: 'resize'
+	};
+
 })(window.bite = window.bite || {});
+
+/**
+ * handle events invoking directly a method inside the DOM Element
+ */
+if (!Element.prototype.addEventListener) {
+	Element.prototype.addEventListener = function(type, handler, useCapture) {
+	  if (this.attachEvent) {
+	    this.attachEvent('on' + type, function(event) {
+	      event.preventDefault = function() {
+	        event.returnValue = false;
+	        return false;
+	      };
+
+	      event.stopPropagation = function() {
+	        window.event.cancelBubble = true;
+	        return false;
+	      };
+
+	      event.target = event.srcElement;
+	      event.currentTarget = event.srcElement;
+
+
+	      handler(event);
+	    });
+	  }
+	  return this;
+	};
+	}
+
+	if (!Element.prototype.removeEventListener) {
+	Element.prototype.removeEventListener = function(type, handler, useCapture) {
+	  if (this.detachEvent) {
+	    this.detachEvent('on' + type, handler);
+	  }
+	  return this;
+	};
+}

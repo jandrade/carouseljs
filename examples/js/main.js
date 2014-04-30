@@ -4,28 +4,36 @@
  * @version 1.0
  */
 
-$('.slider-default').slider();
+/* global bite */
 
-$('.slider-single').slider({
-	forceTouch: true,
-	duration: 1000,
-	single: true
+var slider = new bite.Slider('.slider-default', {
+    breakpoints: [
+        { width: 320, items: 1},
+        { width: 480, items: 2},
+        { width: 768, items: 3},
+        { width: 1024, items: 6}
+    ]
 });
 
-$('.slider-auto').slider({
-	auto: true,
-	forceTouch: true,
-	duration: 2000
+var sliderSingle = new bite.Slider('.slider-single', {
+    forceTouch: true,
+    single: true
 });
 
-
-$('.slider-no-inf').slider({
-	infinite: false
+var sliderAuto = new bite.Slider('.slider-auto', {
+    auto: true,
+    single: true,
+    forceTouch: true,
+    duration: 4000
 });
 
-$('.slider-vertical').slider({
-	forceTouch: true,
-	infinite: false,
-	vertical: true,
-	single: true
+var sliderNoInf = new bite.Slider('.slider-no-inf', {
+    infinite: false
+});
+
+var sliderVertical = new bite.Slider('.slider-vertical', {
+    forceTouch: true,
+    infinite: false,
+    vertical: true,
+    single: true
 });

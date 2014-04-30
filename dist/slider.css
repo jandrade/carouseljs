@@ -1,4 +1,4 @@
-/*! slider v1.0.0 2014-03-02 */
+/*! bite-slider v1.0.0 2014-03-02 */
 ul,
 li {
   padding: 0;
@@ -8,7 +8,7 @@ img {
   max-width: 100%;
 }
 
-.slider {
+.bite-slider {
   -ms-user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -21,19 +21,19 @@ img {
   -webkit-perspective: 1000;
 }
  
-  .slider-viewport {
+  .bite-slider-viewport {
     margin: 0 auto;
     overflow: hidden;
   }
 
-  .slider-mask {
+  .bite-slider-mask {
     float: left;
     font-size: 0;
     transition: all 0.5s;
     transform: translate3d(0px,0,0px);
   }
 
-    .slider-mask li {
+    .bite-slider-mask li {
       display: block;
       float: left;
       font-size: 13px;
@@ -45,15 +45,15 @@ img {
       margin: 0;
     }
   
-    .slider-mask li:before,
-    .slider-mask li:after {
+    .bite-slider-mask li:before,
+    .bite-slider-mask li:after {
       -webkit-sizing: border-box;
       -moz-sizing: border-box;
       box-sizing: border-box;
     }
 
-  .slider .prev-btn,
-  .slider .next-btn {
+  .bite-slider .prev-btn,
+  .bite-slider .next-btn {
     color: #000;
     font-size: 2em;
     padding: 2%;
@@ -63,24 +63,24 @@ img {
     z-index: 1;
   }
 
-  .slider .next-btn {
+  .bite-slider .next-btn {
     left: auto;
     right: 0;
   }
 
-  .slider-pager {
+  .bite-slider-pager {
     margin: 0.5em 0;
     text-align: center;
   }
 
-  .slider-pager li {
+  .bite-slider-pager li {
     border: 0;
     display: inline-block;
     margin: 0 5px;
     padding: 0;
   }
 
-    .slider-pager a {
+    .bite-slider-pager a {
       background-color: #999;
       border-radius: 100%;
       display: block;
@@ -92,6 +92,6 @@ img {
       width: 8px;
     }
 
-    .slider-pager .active {
+    .bite-slider-pager .active {
       background-color: #000;
     }

@@ -4,10 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Slider</title>
-        <link href='http://fonts.googleapis.com/css?family=Lato|Lustria' rel='stylesheet' type='text/css'>
-
-        <link rel="stylesheet" href="css/bite.css">
+        <title>
+        </title>
         <link rel="stylesheet" href="css/bite-slider.css">
 
         <style>
@@ -29,7 +27,7 @@
     </head>
     <body>
         <h1>
-            BITE > Slider
+            bite-slider Example
         </h1>
 
         <h2>Default</h2>
@@ -44,22 +42,8 @@
                 <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=7" alt=""></li>
                 <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=8" alt=""></li>
                 <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=9" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=10" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=11" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=12" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=13" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=14" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=15" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=16" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=17" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=18" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=19" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=20" alt=""></li>
             </ul>
         </div>
-        <code>
-            var slider = new bite.Slider('.slider-default');
-        </code>
         
         <hr>
 
@@ -74,13 +58,6 @@
             </ul>
         </div>
 
-        <code>
-            var sliderSingle = new bite.Slider('.slider-single', {
-                forceTouch: true,
-                single: true
-            });
-        </code>
-
         <hr>
 
         <h2>Auto</h2>
@@ -93,15 +70,6 @@
                 <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
             </ul>
         </div>
-
-        <code>
-            var sliderAuto = new bite.Slider('.slider-auto', {
-                auto: true,
-                single: true,
-                forceTouch: true,
-                duration: 4000
-            });
-        </code>
 
         <hr>
 
@@ -117,14 +85,6 @@
             </ul>
         </div>
 
-        <code>
-            var sliderNoInf = new bite.Slider('.slider-no-inf', {
-                infinite: false
-            });
-        </code>
-
-        <hr>
-
         <h2>Vertical Scrolling</h2>
         <div class="bite-slider slider-vertical">
             <ul class="bite-slider-items">
@@ -137,18 +97,12 @@
             </ul>
         </div>
 
-        <code>
-            var sliderVertical = new bite.Slider('.slider-vertical', {
-                forceTouch: true,
-                infinite: false,
-                vertical: true,
-                single: true
-            });
-        </code>
-
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="../src/bite.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../src/prefixr.js" type="text/javascript" charset="utf-8"></script>
         <script src="../src/slider.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/prefixr.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/utils.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../src/jquery.slider.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
     </body>
 

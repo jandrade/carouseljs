@@ -1,0 +1,32 @@
+body {
+	background-color: #dedede;
+	line-height: 1.6em;
+	padding: 1em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Lato', sans-serif;
+}
+
+body, p, code {
+	font-family: 'Lustria', sans-serif;
+}
+
+hr {
+	margin: 2em auto;
+	width: 50%;
+}
+
+*,
+*:after,
+*:before {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+code {
+	background-color: rgba(200,200,200, 0.6);
+	display: block;
+	margin: 1em 0;
+	padding: 0.5em;
+}

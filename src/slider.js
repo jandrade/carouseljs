@@ -3,7 +3,7 @@
  * @author Juan Andrade <juandavidandrade@gmail.com>
  */
 
-/* global Utils, Prefixr */
+/* global bite, Prefixr */
 
 (function(bite) {
   'use strict';
@@ -25,7 +25,7 @@
        * Items container (strip)
        * @type {HTMLElement}
        */
-      itemsWrapper,
+      itemsContainer,
 
       /**
        * Slider viewport
@@ -113,92 +113,109 @@
       isDragging = false,
 
       /**
+       * Validates if the slider should include the pager
+       * @type {Boolean}
+       */
+      hasPager = false,
+
+      /**
+       * Validates if the component is sliding
+       * @type {Boolean}
+       */
+      isSliding = false,
+
+      /**
        * timer interval
        * @type {Number}
        */
       intervalID,
 
+      /**
+       * Current breakpoint
+       */
       breakpoint,
 
-      BREAKPOINTS = [
-          { s: 220,
-            w: 3
-          },
-          { s: 460,
-            w: 4
-          },
-          { s: 768,
-            w: 3
-          },
-          { s: 900,
-            w: 4
-          },
-          { s: 1024,
-            w: 5
-          },
-          { s: 1200,
-            w: 12
-          }
-        ],
-
-      hasPager = false,
-
-      isSliding = false,
+      /**
+       * Private Constants
+       * @type {Enum}
+       */
+      CLASSES = {
+        main: 'bite-slider-init',
+        built: 'bite-slider-built'
+      },
 
       /**
        * Default settings
        * @type {Enum}
        */
       SETTINGS = {
-        wrapper: '.slider-mask',
-        viewport: '.slider-viewport',
+        // DOM references
+        collection: '.bite-slider-items',
+        viewport: 'bite-slider-viewport',
         items: 'li',
-        prevBtn: '.prev-btn',
-        nextBtn: '.next-btn',
-        clone: '.slider-clone',
-        slides: 0,
+        prevBtn: 'bite-prev-btn',
+        nextBtn: 'bite-next-btn',
+        clone: 'bite-slider-clone',
+        active: 'bite-active',
+        pager: 'bite-slider-pager',
+        // logic
         time: 0.5,
         single: false,
-        pager: '.slider-pager li',
         showPager: true,
-        arrows: !Utils.touch(),
+        arrows: !bite.utils.touch(),
         infinite: true,
         delta: 50,
         forceTouch: false,
         auto: false,
         duration: 3000,
-        vertical: false
-      },
-      TEMPLATES = {
-        viewport: '<div class="slider-viewport"></div>',
-        pager: '<ul class="slider-pager"></ul>',
-        pagerItem: '<li><a href="#">1</a></li>',
-        prevButton: '<a href="#" class="prev-btn">&lt;</a>',
-        nextButton: '<a href="#" class="next-btn">&gt;</a>'
+        vertical: false,
+        // responsive
+        breakpoints: [
+          { width: 220,
+           items: 3
+          },
+          { width: 460,
+           items: 4
+          },
+          { width: 768,
+           items: 3
+          },
+          { width: 900,
+           items: 4
+          },
+          { width: 1024,
+           items: 5
+          },
+          { width: 1200,
+           items: 12
+          }
+        ]
       };
 
     /**
-     * @construcs jda.Carousel
+     * @construcs bite.Slider
      */
     (function() {
       SETTINGS = bite.utils.extend(SETTINGS, options);
+
       element = (typeof selector === 'string') ? document.querySelector(selector) : selector;
 
-      if (element.classList.contains('sliderjs')) {
+      if (element.classList.contains(CLASSES.main)) {
         return;
       }
 
-      element.classList.add('sliderjs');
+      element.classList.add(CLASSES.main);
 
-      itemsWrapper = element.querySelector(SETTINGS.wrapper);
+      itemsContainer = element.querySelector(SETTINGS.collection);
 
+      // create viewport
       viewport = document.createElement('div');
-      viewport.classList.add('slider-viewport');
-      viewport.appendChild(itemsWrapper);
-      
+      viewport.classList.add(SETTINGS.viewport);
+      viewport.appendChild(itemsContainer);
+      // add viewport to main container
       element.appendChild(viewport);
 
-      items = itemsWrapper.querySelectorAll(SETTINGS.items);
+      items = itemsContainer.querySelectorAll(SETTINGS.items);
 
       numItems = items.length;
 
@@ -206,35 +223,52 @@
       
       init();
 
-      element.style.visibility = 'visible';
-
       if (SETTINGS.auto) {
         startTimer();
       }
     }());
 
     function init() {
+      
+
+      var images = itemsContainer.querySelectorAll('img');
+      
+      numImages = images.length;
+
+      if (numImages > 0) {
+        for (var i = numImages - 1; i >= 0; i--) {
+          images[i].addEventListener('load', checkLoadedImages);
+          if (SETTINGS.forceTouch) {
+            images[i].addEventListener(bite.UIEvent.START, preventImageDragging);
+          }
+        }
+      } else {
+        buildComponent();
+      }
+    }
+
+    var numImages,
+      currentImage = 0;
+
+    function checkLoadedImages(e) {
+      currentImage++;
+      if (currentImage >= numImages) {
+        buildComponent();
+      }
+    }
+
+    function buildComponent() {
+
+      defaultSize = items[0].offsetWidth;
+
+      element.classList.add(CLASSES.built);
+
       resizeItems();
       
-      window.addEventListener(UIEvent.RESIZE, resizeItems);
-
       isSliding = false;
 
-      element.addEventListener("mousewheel", function(e) {
-        if (isSliding) {
-         // e.preventDefault();
-          return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-
-     
-        if (e.deltaY > 0) {
-          next();
-        } else {
-          prev();
-        }
-      }, false);
+      window.addEventListener(bite.UIEvent.RESIZE, resizeItems);
+      element.addEventListener("mousewheel", mousewheelHandler, false);
     }
 
     /**
@@ -242,20 +276,10 @@
      * @private
      */
     function addEventListeners() {
-      if (Utils.touch() || SETTINGS.forceTouch) {
-        viewport.addEventListener(UIEvent.START, startHandler, false);
-        viewport.addEventListener(UIEvent.MOVE, moveHandler, false);
-        viewport.addEventListener(UIEvent.END, endHandler, false);
-      }
-
-      if (SETTINGS.forceTouch) {
-        var images = itemsWrapper.querySelectorAll('img');
-
-        for (var i = images.length - 1; i >= 0; i--) {
-          images[i].addEventListener(UIEvent.START, function(e) {
-            e.preventDefault();
-          });
-        };
+      if (bite.utils.touch() || SETTINGS.forceTouch) {
+        viewport.addEventListener(bite.UIEvent.START, startHandler, false);
+        viewport.addEventListener(bite.UIEvent.MOVE, moveHandler, false);
+        viewport.addEventListener(bite.UIEvent.END, endHandler, false);
       }
 
       if (SETTINGS.infinite) {
@@ -263,15 +287,15 @@
       }
       
       if (SETTINGS.arrows) {
-        prevBtn.addEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
-        nextBtn.addEventListener(UIEvent.CLICK, nextBtn_clickHandler, false);
+        prevBtn.addEventListener(bite.UIEvent.CLICK, prevBtn_clickHandler, false);
+        nextBtn.addEventListener(bite.UIEvent.CLICK, nextBtn_clickHandler, false);
       }
       
-      if (!Utils.touch()) {
-        document.body.addEventListener(UIEvent.END, releaseDragging, false);
+      if (!bite.utils.touch()) {
+        document.body.addEventListener(bite.UIEvent.END, releaseDragging, false);
         
         if (SETTINGS.showPager && hasPager) {
-          pager.addEventListener(UIEvent.CLICK, function(e) {
+          pager.addEventListener(bite.UIEvent.CLICK, function(e) {
             e.preventDefault();
             if (e.target.nodeName === 'A') {
               pager_clickHandler(e);
@@ -287,19 +311,27 @@
      * @return {Number} Returns the current breakpoint
      */
     function getBreakpoint(winSize) {
-      var c = BREAKPOINTS.length,
-        curBreakpoint;
+      var c = SETTINGS.breakpoints.length,
+        i = 0,
+        curBreakpoint = -1;
 
-      while (c-- > 0) {
-        if (winSize > BREAKPOINTS[c].s) {
-          curBreakpoint = BREAKPOINTS[c].w;
+      while (i < c) {
+        if (SETTINGS.breakpoints[i].width >= winSize) {
+          curBreakpoint = SETTINGS.breakpoints[i].items;
           break;
         }
+        i++;
       }
 
       return curBreakpoint;
     }
 
+    /**
+     * Creates a link
+     * @param  {String} className The associated class
+     * @param  {String} content   the data
+     * @return {HTMLElement}
+     */
     function createButton(className, content) {
       var a = document.createElement('a');
       a.href = '#';
@@ -309,10 +341,10 @@
     }
 
     /**
-     * [createElement description]
-     * @param  {[type]} className [description]
-     * @param  {[type]} content   [description]
-     * @return {[type]}           [description]
+     * Creates a DOM element
+     * @param  {String} className The class
+     * @param  {String} content   The data
+     * @return {HTMLElement}
      *
      * <ul class="slider-pager"></ul>
      */
@@ -334,8 +366,8 @@
      */
     function buildArrows() {
       if (SETTINGS.arrows) {
-        prevBtn = element.appendChild(createButton('prev-btn', '&lt;'));
-        nextBtn = element.appendChild(createButton('next-btn', '&gt;'));
+        prevBtn = element.appendChild(createButton(SETTINGS.prevBtn, '&lt;'));
+        nextBtn = element.appendChild(createButton(SETTINGS.nextBtn, '&gt;'));
       }
     }
 
@@ -354,7 +386,7 @@
       }
       
       if (typeof pager === 'undefined') {
-        pager = element.appendChild(createElement('slider-pager', '', 'ul'));
+        pager = element.appendChild(createElement(SETTINGS.pager, '', 'ul'));
       }
 
       pager.appendChild(fragment);
@@ -371,35 +403,46 @@
       intervalID = setTimeout(next, SETTINGS.duration);
     }
 
+    var defaultSize = 0;
     /**
      * Resize carousel items
      */
     function resizeItems() {
       var curBreakpoint = getBreakpoint(window.innerWidth),
         i = 0,
-        clones = element.querySelectorAll(SETTINGS.clone),
+        clones = element.querySelectorAll('.' + SETTINGS.clone),
         numItems = items.length;
+
+      // get new carousel width
+      size = element.offsetWidth;
+
+      // no breakpoint detected, handle automatically items
+      if (curBreakpoint < 0) {
+        var maxItems = Math.floor(element.offsetWidth / defaultSize);
+        curBreakpoint = maxItems;
+      }
 
       if (SETTINGS.single) {
         curBreakpoint = 1;
+      } else {
+        if (size/curBreakpoint < defaultSize) {
+          curBreakpoint = Math.floor(element.offsetWidth / defaultSize);
+        }
       }
-
+      
       // disable carousel
-      if (curBreakpoint > numItems) {
+      if (curBreakpoint >= numItems) {
         // remove pager
         if (typeof pager !== 'undefined') {
           pager.innerHTML = '';
         }
 
         // remove cloned elements
-        bite.utils.remove(clones);
+        bite.dom.remove(clones);
         index = 0;
         curBreakpoint = numItems;
       }
 
-      // get new carousel width
-      size = element.offsetWidth;
-      
       for ( ; i < numItems; i++ ) {
         items[i].style.width = size/curBreakpoint + 'px';
       }
@@ -408,19 +451,19 @@
         clones[i].style.width = size/curBreakpoint + 'px';
       }
       
-      itemsWrapper.style.width = (SETTINGS.infinite) ? ((numItems+4)*100) + '%' : (numItems*100) + '%';
+      if (!SETTINGS.vertical) {
+        itemsContainer.style.width = (SETTINGS.infinite) ? ((numItems+4)*100) + '%' : (numItems*100) + '%';
+      }
 
       numSteps = numItems / curBreakpoint;
 
 
       if (SETTINGS.vertical) {
-        setTimeout(function() {
-          // set viewport height
-          viewport.style.height = items[0].offsetHeight + 'px';
-          size = items[0].offsetHeight;
-        }, 1000);
+        // set viewport height
+        viewport.style.height = items[0].offsetHeight + 'px';
+        size = items[0].offsetHeight;
+      
       }
-
 
       // disable transition
       changeTransition(0);
@@ -448,18 +491,18 @@
 
       // add items to simulate the infinite scrolling effect
       if (SETTINGS.infinite) {
-        var clones = element.querySelectorAll(SETTINGS.clone);
+        var clones = element.querySelectorAll('.' + SETTINGS.clone);
       
-        bite.utils.remove(clones);
+        bite.dom.remove(clones);
 
         var sliceA = Array.prototype.slice.call(items).slice(0, curBreakpoint),
           slicePrepend = Array.prototype.slice.call(items).slice(-curBreakpoint),
-          clonedAppend = bite.utils.clone(sliceA, 'slider-clone'),
-          clonedPrepend = bite.utils.clone(slicePrepend, 'slider-clone');
+          clonedAppend = bite.dom.clone(sliceA, SETTINGS.clone),
+          clonedPrepend = bite.dom.clone(slicePrepend, SETTINGS.clone);
         
         // add clones
-        bite.utils.append(itemsWrapper, clonedAppend);
-        bite.utils.prepend(itemsWrapper, clonedPrepend);
+        bite.dom.append(itemsContainer, clonedAppend);
+        bite.dom.prepend(itemsContainer, clonedPrepend);
       }
 
       hasPager = true;
@@ -488,11 +531,11 @@
      */
     function removeNavigation() {
       
-      if (Utils.touch() || SETTINGS.forceTouch) {
+      if (bite.utils.touch() || SETTINGS.forceTouch) {
         // remove drag&drop handlers
-        viewport.removeEventListener(UIEvent.START, startHandler, false);
-        viewport.removeEventListener(UIEvent.MOVE, moveHandler, false);
-        viewport.removeEventListener(UIEvent.END, endHandler, false);
+        viewport.removeEventListener(bite.UIEvent.START, startHandler, false);
+        viewport.removeEventListener(bite.UIEvent.MOVE, moveHandler, false);
+        viewport.removeEventListener(bite.UIEvent.END, endHandler, false);
       }
 
       if (SETTINGS.infinite) {
@@ -500,14 +543,14 @@
       }
       
       // fix for desktop dragging
-      if (!Utils.touch() && SETTINGS.forceTouch) {
-        document.body.removeEventListener(UIEvent.END, releaseDragging, false);
+      if (!bite.utils.touch() && SETTINGS.forceTouch) {
+        document.body.removeEventListener(bite.UIEvent.END, releaseDragging, false);
       }
       
       // remove arrows
       if (SETTINGS.arrows && prevBtn) {
-        prevBtn.removeEventListener(UIEvent.CLICK, prevBtn_clickHandler, false);
-        nextBtn.removeEventListener(UIEvent.CLICK, nextBtn_clickHandler, false);
+        prevBtn.removeEventListener(bite.UIEvent.CLICK, prevBtn_clickHandler, false);
+        nextBtn.removeEventListener(bite.UIEvent.CLICK, nextBtn_clickHandler, false);
         element.removeChild(prevBtn);
         element.removeChild(nextBtn);
 
@@ -569,9 +612,9 @@
       isSliding = true;
 
       if (!SETTINGS.vertical) {
-        itemsWrapper.style[Prefixr.transform] = 'translate3d(' + pos + 'px, 0, 0)';
+        itemsContainer.style[Prefixr.transform] = 'translate3d(' + pos + 'px, 0, 0)';
       } else {
-        itemsWrapper.style[Prefixr.transform] = 'translate3d(0, ' + pos + 'px, 0)';
+        itemsContainer.style[Prefixr.transform] = 'translate3d(0, ' + pos + 'px, 0)';
       }
 
       if (SETTINGS.showPager && hasPager) {
@@ -590,7 +633,7 @@
      * @param  {Number} time - The transition time
      */
     function changeTransition(time) {
-      itemsWrapper.style[Prefixr.transition] = 'all ' + time + 's';
+      itemsContainer.style[Prefixr.transition] = 'all ' + time + 's';
     }
 
     /**
@@ -600,14 +643,57 @@
       if (page === pageIndex) {
         return;
       }
-      if (pager.querySelector('.active')) {
-        pager.querySelector('.active').classList.remove('active');  
+      if (pager.querySelector('.' + SETTINGS.active)) {
+        pager.querySelector('.' + SETTINGS.active).classList.remove(SETTINGS.active);  
       }
 
       page = pageIndex;
       
       if (typeof pager.querySelectorAll('li')[pageIndex] !== 'undefined') {
-        pager.querySelectorAll('li')[pageIndex].querySelector('a').classList.add('active');
+        pager.querySelectorAll('li')[pageIndex].querySelector('a').classList.add(SETTINGS.active);
+      }
+    }
+
+    /**
+     * Gets the current position
+     * @return {Number}
+     */
+    function getCurrentPosition() {
+      // Detect current position
+      var posType = !SETTINGS.vertical ? 'x' : 'y';
+
+      return bite.utils.getTranslateCoordinate(itemsContainer.style[Prefixr.transform], posType);
+    }
+
+    /** ------------------------------------------
+     * Event Handlers
+     * ------------------------------------------ */
+
+    /**
+     * Disables image dragging
+     * @event
+     */
+    function preventImageDragging(e) {
+      e.preventDefault();
+    }
+
+    /**
+     * Allows to navigate through the mouse wheel
+     * @event
+     */
+    function mousewheelHandler(e) {
+      if (isSliding) {
+       // e.preventDefault();
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+
+   
+      if (e.deltaY > 0) {
+        next();
+      } else {
+        prev();
       }
     }
 
@@ -615,9 +701,8 @@
      * Animation ended
      */
     function transitionEndHandler() {
-      // Detect current position
-      var pos = !SETTINGS.vertical ? Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x') : Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'y');
-     
+      var pos = getCurrentPosition();
+      
       // start
       if (pos > -size) {
         changeTransition(0);
@@ -659,7 +744,8 @@
      */
     function pager_clickHandler(e) {
       e.preventDefault();
-      var pagerIndex = bite.utils.index(e.target.parentNode, '.slider-pager');
+      // get selected page index
+      var pagerIndex = bite.dom.index(e.target.parentNode, element.querySelector('.' + SETTINGS.pager));
 
       index = pagerIndex+1;
 
@@ -680,7 +766,7 @@
     }
 
     /**
-     * Move wrapper
+     * Move collection
      * @event
      */
     function moveHandler(e) {
@@ -694,7 +780,7 @@
           currentDragPos = SETTINGS.vertical ? currentDragPosY : currentDragPosX,
           isScrolling = SETTINGS.vertical ? diffX > diffY : diffX < diffY;
         
-        // user is scrolling window? (stop slider)
+        // is user scrolling the document? (lock slider)
         if (isScrolling) {
           return;
         }
@@ -703,9 +789,9 @@
         e.stopPropagation();
       
         changeTransition(0);
-        var pos = SETTINGS.vertical ? Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'y') : Utils.getTranslateCoordinate(itemsWrapper.style[Prefixr.transform], 'x');
-
-          
+        
+        // get current position
+        var pos = getCurrentPosition();
 
         goTo(pos - lastPos + currentDragPos);
         lastPos = currentDragPos;
@@ -759,7 +845,11 @@
     }
 
     // public methods and properties
-    return element;
+    return {
+      next: next,
+      prev: prev,
+      goTo: goTo
+    };
   };
 
 }(window.bite = window.bite || {}));
