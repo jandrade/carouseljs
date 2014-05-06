@@ -25,6 +25,11 @@ header {
 	padding: 1em;
 }
 
+footer {
+	padding: 1em;
+	text-align: right;
+}
+
 *,
 *:after,
 *:before {
