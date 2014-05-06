@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Slider</title>
-        <link href='http://fonts.googleapis.com/css?family=Lato|Lustria' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Goudy|Raleway' rel='stylesheet' type='text/css'>
 
         <link rel="stylesheet" href="css/bite.css">
         <link rel="stylesheet" href="css/bite-slider.css">
@@ -18,6 +18,25 @@
                 }
             }
 
+            header {
+                display: block;
+                clear: both;
+            }
+
+            h1 {
+                float: left;
+                margin: 0.6em;
+                line-height: 1.3em;
+            }
+
+            .logo {
+                float: left;
+            }
+
+            .examples {
+                padding: 1em;
+            }
+
             .sbite-slider-items li {
                 padding: 0 50px;
             }
@@ -28,123 +47,144 @@
         </style>
     </head>
     <body>
-        <h1>
-            BITE > Slider
-        </h1>
-
-        <h2>Default</h2>
-        <div class="bite-slider slider-default">
-            <ul class="bite-slider-items">
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=7" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=8" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=9" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=10" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=11" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=12" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=13" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=14" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=15" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=16" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=17" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=18" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=19" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=20" alt=""></li>
-            </ul>
-        </div>
-        <code>
-            var slider = new bite.Slider('.slider-default');
-        </code>
+        <header class="clearfix">
+            <img class="logo" src="img/bite-logo.png" width="80" alt=""> 
+            <h1>
+                Slider
+            </h1>
+        </header>
         
-        <hr>
-
-        <h2>Single</h2>
-        <div class="bite-slider slider-single single">
-            <ul class="bite-slider-items">
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+        <div class="examples clearfix">
+            <section>
+                <p>A lightweight and flexible carousel/slider. It is a javascript component built using raw javascript, to avoid library dependencies. The component supports css3 transitions, infinite navigation, responsive behaviors and other stuff.</p>
+            </section>
+            
+            <h2>Options</h2>
+            <ul>
+                <li><strong>infinite: </strong> Enables infinite/circular navigation (default: false)</li>
+                <li><strong>forceTouch: </strong> Forces dragging behavior (default: false)</li>
+                <li><strong>auto: </strong> Enables automatic sliding (default: false)</li>
+                <li><strong>duration: </strong> Duration time between slides on auto enabled (default: 5000)</li>
+                <li><strong>vertical: </strong> Enables vertical navigation (default: false)</li>
+                <li><strong>breakpoints: </strong> Enables vertical navigation (default: false)</li>
             </ul>
+
+            <h2>Examples</h2>
+
+            <h3>Default</h3>
+            <div class="bite-slider slider-default">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=7" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=8" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=9" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=10" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=11" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=12" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=13" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=14" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=15" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=16" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=17" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=18" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=19" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=20" alt=""></li>
+                </ul>
+            </div>
+            <pre><code>
+                var slider = new bite.Slider('.slider-default');
+            </code></pre>
+            
+            <hr>
+
+            <h3>Single</h3>
+            <div class="bite-slider slider-single single">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderSingle = new bite.Slider('.slider-single', {
+                    forceTouch: true,
+                    single: true
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Auto</h3>
+            <div class="bite-slider slider-auto single">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderAuto = new bite.Slider('.slider-auto', {
+                    auto: true,
+                    single: true,
+                    forceTouch: true,
+                    duration: 4000
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Without infinite scroll</h3>
+            <div class="bite-slider slider-no-inf">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderNoInf = new bite.Slider('.slider-no-inf', {
+                    infinite: false
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Vertical Scrolling</h3>
+            <div class="bite-slider slider-vertical">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=6" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderVertical = new bite.Slider('.slider-vertical', {
+                    forceTouch: true,
+                    infinite: false,
+                    vertical: true,
+                    single: true
+                });
+            </code></pre>
         </div>
-
-        <code>
-            var sliderSingle = new bite.Slider('.slider-single', {
-                forceTouch: true,
-                single: true
-            });
-        </code>
-
-        <hr>
-
-        <h2>Auto</h2>
-        <div class="bite-slider slider-auto single">
-            <ul class="bite-slider-items">
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
-                <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
-            </ul>
-        </div>
-
-        <code>
-            var sliderAuto = new bite.Slider('.slider-auto', {
-                auto: true,
-                single: true,
-                forceTouch: true,
-                duration: 4000
-            });
-        </code>
-
-        <hr>
-
-        <h2>Without infinite scroll</h2>
-        <div class="bite-slider slider-no-inf">
-            <ul class="bite-slider-items">
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
-                <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
-            </ul>
-        </div>
-
-        <code>
-            var sliderNoInf = new bite.Slider('.slider-no-inf', {
-                infinite: false
-            });
-        </code>
-
-        <hr>
-
-        <h2>Vertical Scrolling</h2>
-        <div class="bite-slider slider-vertical">
-            <ul class="bite-slider-items">
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=1" alt=""></li>
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=2" alt=""></li>
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=3" alt=""></li>
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=4" alt=""></li>
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=5" alt=""></li>
-                <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=6" alt=""></li>
-            </ul>
-        </div>
-
-        <code>
-            var sliderVertical = new bite.Slider('.slider-vertical', {
-                forceTouch: true,
-                infinite: false,
-                vertical: true,
-                single: true
-            });
-        </code>
 
         <script src="../src/bite.js" type="text/javascript" charset="utf-8"></script>
         <script src="../src/prefixr.js" type="text/javascript" charset="utf-8"></script>

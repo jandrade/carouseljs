@@ -115,34 +115,33 @@
  */
 if (!Element.prototype.addEventListener) {
 	Element.prototype.addEventListener = function(type, handler, useCapture) {
-	  if (this.attachEvent) {
-	    this.attachEvent('on' + type, function(event) {
-	      event.preventDefault = function() {
-	        event.returnValue = false;
-	        return false;
-	      };
+		if (this.attachEvent) {
+			this.attachEvent('on' + type, function(event) {
+				event.preventDefault = function() {
+					event.returnValue = false;
+					return false;
+				};
 
-	      event.stopPropagation = function() {
-	        window.event.cancelBubble = true;
-	        return false;
-	      };
+				event.stopPropagation = function() {
+					window.event.cancelBubble = true;
+					return false;
+				};
 
-	      event.target = event.srcElement;
-	      event.currentTarget = event.srcElement;
+				event.target = event.srcElement;
+				event.currentTarget = event.srcElement;
 
-
-	      handler(event);
-	    });
-	  }
-	  return this;
+				handler(event);
+			});
+		}
+		return this;
 	};
-	}
+}
 
-	if (!Element.prototype.removeEventListener) {
+if (!Element.prototype.removeEventListener) {
 	Element.prototype.removeEventListener = function(type, handler, useCapture) {
-	  if (this.detachEvent) {
-	    this.detachEvent('on' + type, handler);
-	  }
-	  return this;
+		if (this.detachEvent) {
+			this.detachEvent('on' + type, handler);
+		}
+		return this;
 	};
 }
