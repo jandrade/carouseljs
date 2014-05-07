@@ -1,0 +1,58 @@
+body {
+	background-color: #f7f7f7;
+	line-height: 1.6em;
+	margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Raleway', sans-serif;
+	text-transform: uppercase;
+}
+
+body, p, code {
+	font-family: 'Goudy', sans-serif;
+}
+
+hr {
+	margin: 2em auto;
+	width: 100%;
+}
+
+header {
+	background-color: #ccc;
+	border-bottom: 1px solid #aaa;
+	border-top: 1px solid #aaa;
+	padding: 1em;
+}
+
+footer {
+	padding: 1em;
+	text-align: right;
+}
+
+*,
+*:after,
+*:before {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+code {
+	background-color: rgba(200,200,200, 0.6);
+	display: block;
+	margin: 1em 0;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}

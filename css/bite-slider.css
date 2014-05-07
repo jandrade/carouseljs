@@ -1,0 +1,131 @@
+/**
+ * Reset
+ */
+.bite-slider ul,
+.bite-slider li {
+  padding: 0;
+}
+
+.bite-slider img {
+  max-width: 100%;
+}
+
+.bite-slider a {
+  text-decoration: none;
+}
+
+/**
+ * Slider
+ */
+.bite-slider {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  height: 100%;
+  visibility: hidden;
+  width: 100%;
+
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+
+  .bite-slider-built {
+    visibility: visible;
+  }
+ 
+  .bite-slider-viewport {
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .bite-slider-items {
+    cursor: -webkit-grab;
+    float: left;
+    font-size: 0;
+    transition: all 0.5s;
+    transform: translate3d(0px,0,0px);
+  }
+
+    /**
+     * Horizontal bite-slider (default)
+     */
+    .bite-slider-items li {
+      display: block;
+      float: left;
+      font-size: 13px;
+
+      -webkit-sizing: border-box;
+      -moz-sizing: border-box;
+      box-sizing: border-box;
+     /* width: 100px;*/
+      margin: 0;
+    }
+
+    /**
+     * Vertical bite-slider
+     */
+    .bite-slider-vertical .bite-slider-items {
+      width: 100% !important;  
+    }
+      .bite-slider-vertical .bite-slider-items li {
+        width: 100%;
+      }
+
+  /**
+   * Navigation arrows
+   */
+  .bite-slider .bite-prev-btn,
+  .bite-slider .bite-next-btn {
+    color: #000;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 1.5em;
+    line-height: 1em;
+    padding: 0.5em;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -0.75em;
+    z-index: 1;
+  }
+
+  .bite-slider .bite-next-btn {
+    left: auto;
+    right: 0;
+  }
+
+    .bite-slider .bite-prev-btn:hover,
+    .bite-slider .bite-next-btn:hover {
+      color: rgba(0, 0, 0, 1);
+    }
+
+  /**
+   * Pager
+   */
+  .bite-slider-pager {
+    margin: 0.5em 0;
+    text-align: center;
+  }
+
+  .bite-slider-pager li {
+    border: 0;
+    display: inline-block;
+    margin: 0 5px;
+    padding: 0;
+  }
+
+    .bite-slider-pager a {
+      background-color: #999;
+      border-radius: 100%;
+      display: block;
+      height: 8px;
+      overflow: hidden;
+      padding: 0;
+      text-indent: -999em;
+      text-decoration: none;
+      width: 8px;
+    }
+
+    .bite-slider-pager .bite-active {
+      background-color: #000;
+    }

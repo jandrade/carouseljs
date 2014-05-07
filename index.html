@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Slider</title>
+        <link href='http://fonts.googleapis.com/css?family=Goudy|Raleway' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="css/bite.css">
+        <link rel="stylesheet" href="css/bite-slider.css">
+
+        <style>
+
+            @media (max-width: 600px) {
+                .slider-single {
+                    width: 100%;
+                }
+            }
+
+            header {
+                display: block;
+                clear: both;
+            }
+
+            h1 {
+                float: left;
+                margin: 0.6em;
+                line-height: 1.3em;
+            }
+
+            .logo {
+                float: left;
+            }
+
+            .examples {
+                padding: 1em;
+            }
+
+            .sbite-slider-items li {
+                padding: 0 50px;
+            }
+
+            .bite-slider-items li {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="clearfix">
+            <img class="logo" src="img/bite-logo.png" width="80" alt=""> 
+            <h1>
+                Slider
+            </h1>
+
+            <a href="https://github.com/jandrade/sliderjs" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+        </header>
+        
+        <div class="examples clearfix">
+            <section>
+                <p>A lightweight and flexible carousel/slider. It is a javascript component built using raw javascript, to avoid library dependencies. The component supports css3 transitions, infinite navigation, responsive behaviors and other stuff.</p>
+            </section>
+            
+            <h2>Options</h2>
+            <ul>
+                <li><strong>infinite (boolean): </strong> Enables infinite/circular navigation (default: false)</li>
+                <li><strong>forceTouch (boolean): </strong> Forces dragging behavior (default: false)</li>
+                <li><strong>auto (boolean): </strong> Enables automatic sliding (default: false)</li>
+                <li><strong>duration (number): </strong> Duration time between slides on auto enabled (default: 5000)</li>
+                <li><strong>vertical (boolean): </strong> Enables vertical navigation (default: false)</li>
+                <li><strong>breakpoints (object): </strong> Add breakpoints to make a fully flexible slider</li>
+            </ul>
+
+            <h2>Examples</h2>
+
+            <h3>Default</h3>
+            <div class="bite-slider slider-default">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=7" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=8" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=9" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=10" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=11" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=12" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=13" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=14" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=15" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=16" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=17" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=18" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=19" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=20" alt=""></li>
+                </ul>
+            </div>
+            <pre><code>
+                var slider = new bite.Slider('.slider-default');
+            </code></pre>
+            
+            <hr>
+
+            <h3>Single</h3>
+            <div class="bite-slider slider-single single">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderSingle = new bite.Slider('.slider-single', {
+                    forceTouch: true,
+                    single: true
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Auto</h3>
+            <div class="bite-slider slider-auto single">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x160/165599/ffffff&text=5" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderAuto = new bite.Slider('.slider-auto', {
+                    auto: true,
+                    single: true,
+                    forceTouch: true,
+                    duration: 4000
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Without infinite scroll</h3>
+            <div class="bite-slider slider-no-inf">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/60x60/165599/ffffff&text=6" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderNoInf = new bite.Slider('.slider-no-inf', {
+                    infinite: false
+                });
+            </code></pre>
+
+            <hr>
+
+            <h3>Vertical Scrolling</h3>
+            <div class="bite-slider slider-vertical">
+                <ul class="bite-slider-items">
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=1" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=2" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=3" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=4" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=5" alt=""></li>
+                    <li><img src="http://dummyimage.com/500x460/165599/ffffff&text=6" alt=""></li>
+                </ul>
+            </div>
+
+            <pre><code>
+                var sliderVertical = new bite.Slider('.slider-vertical', {
+                    forceTouch: true,
+                    infinite: false,
+                    vertical: true,
+                    single: true
+                });
+            </code></pre>
+        </div>
+
+        <footer id="footer" class="clearfix">
+            Copyright &copy; 2014 - Juan David Andrade
+        </footer><!-- #footer -->
+
+        <script src="https://raw.githubusercontent.com/jandrade/sliderjs/master/dist/bite-slider.js" type="text/javascript" charset="utf-8"></script>
+    </body>
+
+</html>
