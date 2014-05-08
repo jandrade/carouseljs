@@ -70,5 +70,6 @@ pre {
 }
 
 .block {
+	margin-top: 2em;
 	border-top: 4px solid #0099cc;
 }
