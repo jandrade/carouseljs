@@ -26,8 +26,14 @@ header {
 }
 
 footer {
+	font-size: 0.8em;
 	padding: 1em;
 	text-align: right;
+}
+
+ul {
+	margin: 0;
+	padding: 0 1em;
 }
 
 *,
@@ -37,10 +43,16 @@ footer {
 	box-sizing: border-box;
 }
 
-code {
-	background-color: rgba(200,200,200, 0.6);
-	display: block;
-	margin: 1em 0;
+pre {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
 }
 
 .clearfix:before,
@@ -55,4 +67,8 @@ code {
 
 .clearfix {
     *zoom: 1;
+}
+
+.block {
+	border-top: 4px solid #0099cc;
 }

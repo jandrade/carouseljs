@@ -77,11 +77,13 @@
    */
   .bite-slider .bite-prev-btn,
   .bite-slider .bite-next-btn {
-    color: #000;
-    color: rgba(0, 0, 0, 0.7);
+    background-color: #000;
+    border-radius: 100%;
+    color: #fff;
+    color: rgba(255, 255, 255, 0.85);
     font-size: 1.5em;
-    line-height: 1em;
-    padding: 0.5em;
+    line-height: 1.7em;
+    padding: 0 0.5em;
     left: 0;
     position: absolute;
     top: 50%;
@@ -96,7 +98,7 @@
 
     .bite-slider .bite-prev-btn:hover,
     .bite-slider .bite-next-btn:hover {
-      color: rgba(0, 0, 0, 1);
+      color: rgba(255, 255, 255, 1);
     }
 
   /**
